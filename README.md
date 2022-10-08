@@ -1,5 +1,6 @@
 # conwayslife
 
+![](https://github.com/axellarsstenson/conwayslife/blob/main/images/demo.gif?raw=true)
 
 ## Overview
 
