@@ -4,7 +4,7 @@ const cols = 60;
 const rows = 60;
 
 
-const nestedArray = Array.from({ length: cols }, () =>
+nestedArray = Array.from({ length: cols }, () =>
   Array.from({ length: rows }, () => false)
 );
 
@@ -96,6 +96,11 @@ function flipSwitch() {
   running = !running;
 }
 
+function reset(){
+  running = false;
+  nestedArray = Array.from({ length: cols }, () =>
+  Array.from({ length: rows }, () => false))
+}
 
 function setup() {
 
@@ -112,9 +117,14 @@ function setup() {
   running = false;
 
 
-  var btn = document.getElementById("switch");
-  btn.addEventListener('click', () => {
+  var switchButton = document.getElementById("switch");
+  switchButton.addEventListener('click', () => {
     flipSwitch();
+  })
+
+  var resetButton = document.getElementById("reset");
+  resetButton.addEventListener('click', () => {
+    reset();
   })
 }
 
