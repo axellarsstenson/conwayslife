@@ -3,6 +3,9 @@ colorlist = ['deepskyblue', 'blue'];
 const cols = 60;
 const rows = 60;
 
+wrap = false;
+currentSpeed = 1;
+speedlist = [3, 5, 10, 25];
 
 nestedArray = Array.from({ length: cols }, () =>
   Array.from({ length: rows }, () => false)
@@ -10,6 +13,20 @@ nestedArray = Array.from({ length: cols }, () =>
 
 function bool2Int(flag) {
   return flag ? 1 : 0;
+}
+
+function changeOnMouseOver() {
+  if (mouseX >= 0 && mouseY >= 0) {
+    nestedArray[(Math.round((mouseY / height) * rows) % rows)][(Math.round((mouseX / width) * cols) % cols)] = true;
+  }
+}
+
+function changeSpeed(){
+  currentSpeed = ((currentSpeed + 1) % 4);
+}
+
+function changeWrapped(){
+  wrap = !wrap;
 }
 
 function printNumbers() {
@@ -22,8 +39,11 @@ function printNumbers() {
       push();
       translate(i * x, j * y);
 
-      if (running) {
-        nestedArray[j][i] = runRules(nestedArray[j][i], j, i);
+      if (running && wrap) {
+         nestedArray[j][i] = runRules(nestedArray[j][i], j, i);
+      }
+      if (running && !wrap) {
+         nestedArray[j][i] = runRulesNoWrap(nestedArray[j][i], j, i);
       }
 
       //if weird, switch j and i around
@@ -41,11 +61,7 @@ function printNumbers() {
   }
 }
 
-function changeOnMouseOver() {
-  if (mouseX >= 0 && mouseY >= 0) {
-    nestedArray[(Math.round((mouseY / height) * rows) % rows)][(Math.round((mouseX / width) * cols) % cols)] = true;
-  }
-}
+
 
 function runRules(cell, xAddress, yAddress) {
   neighborCount = 0;
@@ -92,6 +108,72 @@ function runRules(cell, xAddress, yAddress) {
     return cell;
 }
 
+
+function runRulesNoWrap(cell, xAddress, yAddress) {
+  
+  neighborCount = 0;
+  
+  // Check the left most column
+  if (xAddress - 1 >= 0){
+    if (yAddress + 1 < rows){
+      if (nestedArray[(xAddress - 1)][(yAddress + 1) % rows]) {
+        neighborCount++;
+      }
+    }
+    if (nestedArray[(xAddress - 1)][yAddress]) {
+      neighborCount++;
+    }
+    if (yAddress - 1 >= 0){
+      if (nestedArray[(xAddress - 1)][(yAddress - 1)]) {
+        neighborCount++;
+      }
+    }
+  }
+
+  // Check the middle column
+  if (yAddress + 1 < rows){
+    if (nestedArray[xAddress][(yAddress + 1)]) {
+      neighborCount++;
+    }
+  }
+  if (yAddress - 1 >= 0){
+    if (nestedArray[xAddress][(yAddress - 1)]) {
+      neighborCount++;
+    }
+  }
+
+  // Check the right most column
+  if (xAddress + 1 < cols){
+    if (yAddress - 1 >= 0){
+      if (nestedArray[(xAddress + 1)][(yAddress + 1) % rows]) {
+        neighborCount++;
+      }
+    }
+
+    if (nestedArray[(xAddress + 1)][yAddress]) {
+      neighborCount++;
+    }
+    if (yAddress - 1 >= 0){
+      if (nestedArray[(xAddress + 1)][(yAddress - 1)]) {
+        neighborCount++;
+      }
+    }
+  }
+
+  if (cell &&
+    ((neighborCount < 2) ||
+    (neighborCount > 3))) {
+    return false;
+  }
+  if (!cell &&
+    (neighborCount == 3)) {
+    return true;
+  }
+  else
+    return cell;
+}
+
+
 function flipSwitch() {
   running = !running;
 }
@@ -118,12 +200,22 @@ function setup() {
 
 
   var switchButton = document.getElementById("switch");
-  switchButton.addEventListener('click', () => {
+    switchButton.addEventListener('click', () => {
     flipSwitch();
   })
 
+  var wrapButton = document.getElementById("wrap");
+    wrapButton.addEventListener('click', () => {
+    changeWrapped();
+  })
+
+  var speedButton = document.getElementById("speed");
+    speedButton.addEventListener('click', () => {
+    changeSpeed();
+  })
+
   var resetButton = document.getElementById("reset");
-  resetButton.addEventListener('click', () => {
+    resetButton.addEventListener('click', () => {
     reset();
   })
 }
@@ -131,7 +223,7 @@ function setup() {
 
 function draw() {
 
-  if (frameCount % 3 == 0) {
+  if (frameCount % speedlist[currentSpeed] == 0) {
     printNumbers();
   }
 
