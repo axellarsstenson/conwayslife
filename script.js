@@ -1,7 +1,7 @@
 colorlist = ['red', 'blue'];
 
-const cols = 100;
-const rows = 100;
+const cols = 60;
+const rows = 60;
 
 
 const nestedArray = Array.from({ length: cols }, () =>
