@@ -1,9 +1,10 @@
 # conwayslife
 
+![](https://github.com/axellarsstenson/conwayslife/blob/main/images/demo.gif?raw=true)
 
 ## Overview
 
-Version of John Conway's famous (some might say infamous, Conway himself hated the game since it overshadowed his much more important work) Game of Life.
+Javascript version of John Conway's famous Game of Life (some might say infamous, Conway himself hated the game since it overshadowed his much more important work).
 
 ## Rules
 
